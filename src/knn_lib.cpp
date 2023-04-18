@@ -75,6 +75,7 @@ void PyBindKDTreeNanoFlann(py::module& m)
   kd_tree_nanoflann.def(py::init<const int, const std::size_t>(),
     "Constructor", "dimensionality"_a, "leaf_max_size"_a = 10);
 
+  kd_tree_nanoflann.def("point_at", &KDTreeNanoFlann::PointAt);
   kd_tree_nanoflann.def("data_matrix", &KDTreeNanoFlann::DataMatrix);
 
   kd_tree_nanoflann.def("add_point", &KDTreeNanoFlann::AddPoint,

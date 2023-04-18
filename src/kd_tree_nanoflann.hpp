@@ -68,6 +68,10 @@ public:
   inline int NumPoints() const
   { return static_cast<int>(this->point_cloud_.data_.size()); }
 
+  // Get the point at the given index
+  inline const Eigen::VectorXd& PointAt(const std::size_t idx) const
+  { return this->point_cloud_.data_.at(idx); }
+
   // Get the reference to the point cloud
   inline const std::vector<Eigen::VectorXd>& Data() const
   { return this->point_cloud_.data_; }
