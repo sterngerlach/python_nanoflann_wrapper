@@ -51,7 +51,7 @@ def main():
     print(f"Query point: {query}")
 
     # Search the K-nearest neighbor points
-    _, knn_indices, knn_dist_sq, _ = kd_tree.query_knn(query, 16)
+    _, knn_indices, knn_dist_sq = kd_tree.query_knn(query, 16)
     for idx, dist_sq in zip(knn_indices, knn_dist_sq):
         print(f"K-nearest neighbor index: {idx}, "
               f"squared distance: {dist_sq:.3f}")
@@ -62,7 +62,7 @@ def main():
                 pad_inches=0.05, transparent=False)
 
     # Perform the radius search
-    _, rnn_indices, rnn_dist_sq, _ = kd_tree.query_radius(query, 0.25)
+    _, rnn_indices, rnn_dist_sq = kd_tree.query_radius(query, 0.25)
     for idx, dist_sq in zip(rnn_indices, rnn_dist_sq):
         print(f"Radius neighbor index: {idx}, "
               f"squared distance: {dist_sq:.3f}")

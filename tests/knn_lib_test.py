@@ -38,34 +38,27 @@ def main():
     print(f"Testing the `knn_lib` implementation ...")
 
     # Search the nearest neighbor point
-    _, nn_idx, nn_dist_sq, nn_point = kd_tree.query_nn(query)
+    _, nn_idx, nn_dist_sq = kd_tree.query_nn(query)
     print(f"Nearest neighbor index: {nn_idx}, "
-          f"squared distance: {nn_dist_sq:.3f}, "
-          f"point: {nn_point}")
+          f"squared distance: {nn_dist_sq:.3f}")
 
     # Search the K-nearest neighbor points
-    _, knn_indices, knn_dist_sq, knn_points = kd_tree.query_knn(query, 3)
-    for idx, dist_sq, point in zip(knn_indices, knn_dist_sq, knn_points):
+    _, knn_indices, knn_dist_sq = kd_tree.query_knn(query, 3)
+    for idx, dist_sq in zip(knn_indices, knn_dist_sq):
         print(f"K-nearest neighbor index: {idx}, "
-              f"squared distance: {dist_sq:.3f}, "
-              f"point: {point}")
+              f"squared distance: {dist_sq:.3f}")
 
     # Perform the radius search
-    _, rnn_indices, rnn_dist_sq, rnn_points = \
-        kd_tree.query_radius(query, np.sqrt(28.0))
-    for idx, dist_sq, point in zip(rnn_indices, rnn_dist_sq, rnn_points):
+    _, rnn_indices, rnn_dist_sq = kd_tree.query_radius(query, 28.0)
+    for idx, dist_sq in zip(rnn_indices, rnn_dist_sq):
         print(f"Radius neighbor index: {idx}, "
-              f"squared distance: {dist_sq:.3f}, "
-              f"point: {point}")
+              f"squared distance: {dist_sq:.3f}")
 
     # Perform the hybrid search
-    _, hybrid_indices, hybrid_dist_sq, hybrid_points = \
-        kd_tree.query_hybrid(query, 28.0, 4)
-    for idx, dist_sq, point in zip(
-        hybrid_indices, hybrid_dist_sq, hybrid_points):
+    _, hybrid_indices, hybrid_dist_sq = kd_tree.query_hybrid(query, 28.0, 4)
+    for idx, dist_sq in zip(hybrid_indices, hybrid_dist_sq):
         print(f"Hybrid neighbor index: {idx}, "
-              f"squared distance: {dist_sq:.3f}, "
-              f"point: {point}")
+              f"squared distance: {dist_sq:.3f}")
 
     print()
 
@@ -77,46 +70,35 @@ def main():
     # Search the nearest neighbor point
     nn_idx = np.argmin(dists)
     nn_dist_sq = dists[nn_idx]
-    nn_point = points[nn_idx]
     print(f"Nearest neighbor index: {nn_idx}, "
-          f"squared distance: {nn_dist_sq:.3f}, "
-          f"point: {nn_point}")
+          f"squared distance: {nn_dist_sq:.3f}")
 
     # Search the K-nearest neighbor points
     knn_indices = np.argpartition(dists, 3)[:3]
     knn_dist_sq = dists[knn_indices]
-    knn_points = points[knn_indices]
-    for idx, dist_sq, point in zip(knn_indices, knn_dist_sq, knn_points):
+    for idx, dist_sq in zip(knn_indices, knn_dist_sq):
         print(f"K-nearest neighbor index: {idx}, "
-              f"squared distance: {dist_sq:.3f}, "
-              f"point: {point}")
+              f"squared distance: {dist_sq:.3f}")
 
     # Perform the radius search
     rnn_indices = np.where(dists <= 28.0)[0]
     rnn_dist_sq = dists[rnn_indices]
-    rnn_points = points[rnn_indices]
     rnn_sort = np.argsort(rnn_dist_sq)
     rnn_indices = rnn_indices[rnn_sort]
     rnn_dist_sq = rnn_dist_sq[rnn_sort]
-    rnn_points = rnn_points[rnn_sort]
-    for idx, dist_sq, point in zip(rnn_indices, rnn_dist_sq, rnn_points):
+    for idx, dist_sq in zip(rnn_indices, rnn_dist_sq):
         print(f"Radius neighbor index: {idx}, "
-              f"squared distance: {dist_sq:.3f}, "
-              f"point: {point}")
+              f"squared distance: {dist_sq:.3f}")
 
     # Perform the hybrid search
     hybrid_indices = np.where(dists <= 28.0)[0]
     hybrid_dist_sq = dists[hybrid_indices]
-    hybrid_points = points[hybrid_indices]
     hybrid_sort = np.argsort(hybrid_dist_sq)[:4]
     hybrid_indices = hybrid_indices[hybrid_sort]
     hybrid_dist_sq = hybrid_dist_sq[hybrid_sort]
-    hybrid_points = hybrid_points[hybrid_sort]
-    for idx, dist_sq, point in zip(
-        hybrid_indices, hybrid_dist_sq, hybrid_points):
+    for idx, dist_sq in zip(hybrid_indices, hybrid_dist_sq):
         print(f"Hybrid neighbor index: {idx}, "
-              f"squared distance: {dist_sq:.3f}, "
-              f"point: {point}")
+              f"squared distance: {dist_sq:.3f}")
 
 if __name__ == "__main__":
     main()
