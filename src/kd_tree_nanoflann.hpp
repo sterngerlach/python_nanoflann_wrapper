@@ -92,6 +92,7 @@ public:
   int QueryNN(const Eigen::VectorXd& query,
               int& nn_idx,
               double& nn_dist_sq,
+              Eigen::VectorXd& nn_point,
               const float eps = 0.0f,
               const bool sorted = true) const;
 
@@ -100,6 +101,7 @@ public:
                const int knn,
                std::vector<int>& nn_indices,
                std::vector<double>& nn_dist_sq,
+               std::vector<Eigen::VectorXd>& nn_points,
                const float eps = 0.0f,
                const bool sorted = true) const;
 
@@ -108,6 +110,7 @@ public:
                   const double radius,
                   std::vector<int>& nn_indices,
                   std::vector<double>& nn_dist_sq,
+                  std::vector<Eigen::VectorXd>& nn_points,
                   const float eps = 0.0f,
                   const bool sorted = true) const;
 
@@ -117,6 +120,7 @@ public:
                   const int max_nn,
                   std::vector<int>& nn_indices,
                   std::vector<double>& nn_dist_sq,
+                  std::vector<Eigen::VectorXd>& nn_points,
                   const float eps = 0.0f,
                   const bool sorted = true) const;
 

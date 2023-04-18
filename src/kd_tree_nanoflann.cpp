@@ -65,6 +65,7 @@ void KDTreeNanoFlann::RemovePoint(const std::size_t idx)
 int KDTreeNanoFlann::QueryNN(const Eigen::VectorXd& query,
                               int& nn_idx,
                               double& nn_dist_sq,
+                              Eigen::VectorXd& nn_point,
                               const float eps,
                               const bool sorted) const
 {
@@ -79,6 +80,7 @@ int KDTreeNanoFlann::QueryNN(const Eigen::VectorXd& query,
     nn_result_set, query.data(), search_params);
   nn_idx = static_cast<int>(result_idx[0]);
   nn_dist_sq = result_dist_sq[0];
+  nn_point = this->point_cloud_.data_[result_idx[0]];
 
   return static_cast<int>(nn_result_set.size());
 }
@@ -88,6 +90,7 @@ int KDTreeNanoFlann::QueryKNN(const Eigen::VectorXd& query,
                               const int knn,
                               std::vector<int>& nn_indices,
                               std::vector<double>& nn_dist_sq,
+                              std::vector<Eigen::VectorXd>& nn_points,
                               const float eps,
                               const bool sorted) const
 {
@@ -103,8 +106,14 @@ int KDTreeNanoFlann::QueryKNN(const Eigen::VectorXd& query,
     nn_result_set, query.data(), search_params);
   nn_indices.resize(nn_result_set.size());
   nn_dist_sq.resize(nn_result_set.size());
+  nn_points.resize(nn_result_set.size());
   std::copy_n(result_indices.begin(), nn_result_set.size(),
               nn_indices.begin());
+  std::transform(result_indices.begin(),
+    result_indices.begin() + nn_result_set.size(),
+    nn_points.begin(),
+    [this](const std::size_t idx) {
+      return this->point_cloud_.data_[idx]; });
 
   return static_cast<int>(nn_result_set.size());
 }
@@ -114,6 +123,7 @@ int KDTreeNanoFlann::QueryRadius(const Eigen::VectorXd& query,
                                  const double radius,
                                  std::vector<int>& nn_indices,
                                  std::vector<double>& nn_dist_sq,
+                                 std::vector<Eigen::VectorXd>& nn_points,
                                  const float eps,
                                  const bool sorted) const
 {
@@ -136,12 +146,17 @@ int KDTreeNanoFlann::QueryRadius(const Eigen::VectorXd& query,
 
   nn_indices.resize(indices_dists.size());
   nn_dist_sq.resize(indices_dists.size());
+  nn_points.resize(indices_dists.size());
   std::transform(indices_dists.begin(), indices_dists.end(),
     nn_indices.begin(),
     [](const IndexDistPair& x) { return static_cast<int>(x.first); });
   std::transform(indices_dists.begin(), indices_dists.end(),
     nn_dist_sq.begin(),
     [](const IndexDistPair& x) { return x.second; });
+  std::transform(indices_dists.begin(), indices_dists.end(),
+    nn_points.begin(),
+    [this](const IndexDistPair& x) {
+      return this->point_cloud_.data_[x.first]; });
 
   return static_cast<int>(indices_dists.size());
 }
@@ -152,6 +167,7 @@ int KDTreeNanoFlann::QueryHybrid(const Eigen::VectorXd& query,
                                  const int max_nn,
                                  std::vector<int>& nn_indices,
                                  std::vector<double>& nn_dist_sq,
+                                 std::vector<Eigen::VectorXd>& nn_points,
                                  const float eps,
                                  const bool sorted) const
 {
@@ -174,7 +190,13 @@ int KDTreeNanoFlann::QueryHybrid(const Eigen::VectorXd& query,
     std::lower_bound(nn_dist_sq.begin(), nn_dist_sq.end(), radius_sq));
   nn_indices.resize(actual_nn);
   nn_dist_sq.resize(actual_nn);
+  nn_points.resize(actual_nn);
   std::copy_n(result_indices.begin(), actual_nn, nn_indices.begin());
+  std::transform(result_indices.begin(),
+    result_indices.begin() + actual_nn,
+    nn_points.begin(),
+    [this](const std::size_t idx) {
+      return this->point_cloud_.data_[idx]; });
 
   return actual_nn;
 }
