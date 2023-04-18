@@ -29,10 +29,8 @@ void PyBindKDTreeNanoFlann(py::module& m)
                      const bool sorted) {
     int nn_idx;
     double nn_dist_sq;
-    Eigen::VectorXd nn_point;
-    const int k = tree.QueryNN(query, nn_idx, nn_dist_sq, nn_point,
-                               eps, sorted);
-    return std::make_tuple(k, nn_idx, nn_dist_sq, nn_point);
+    const int k = tree.QueryNN(query, nn_idx, nn_dist_sq, eps, sorted);
+    return std::make_tuple(k, nn_idx, nn_dist_sq);
   };
 
   auto query_knn = [](const KDTreeNanoFlann& tree,
@@ -42,10 +40,9 @@ void PyBindKDTreeNanoFlann(py::module& m)
                       const bool sorted) {
     std::vector<int> nn_indices;
     std::vector<double> nn_dist_sq;
-    std::vector<Eigen::VectorXd> nn_points;
-    const int k = tree.QueryKNN(query, knn, nn_indices, nn_dist_sq, nn_points,
+    const int k = tree.QueryKNN(query, knn, nn_indices, nn_dist_sq,
                                 eps, sorted);
-    return std::make_tuple(k, nn_indices, nn_dist_sq, nn_points);
+    return std::make_tuple(k, nn_indices, nn_dist_sq);
   };
 
   auto query_radius = [](const KDTreeNanoFlann& tree,
@@ -55,11 +52,9 @@ void PyBindKDTreeNanoFlann(py::module& m)
                          const bool sorted) {
     std::vector<int> nn_indices;
     std::vector<double> nn_dist_sq;
-    std::vector<Eigen::VectorXd> nn_points;
-    const int k = tree.QueryRadius(query, radius,
-                                   nn_indices, nn_dist_sq, nn_points,
+    const int k = tree.QueryRadius(query, radius, nn_indices, nn_dist_sq,
                                    eps, sorted);
-    return std::make_tuple(k, nn_indices, nn_dist_sq, nn_points);
+    return std::make_tuple(k, nn_indices, nn_dist_sq);
   };
 
   auto query_hybrid = [](const KDTreeNanoFlann& tree,
@@ -70,11 +65,9 @@ void PyBindKDTreeNanoFlann(py::module& m)
                          const bool sorted) {
     std::vector<int> nn_indices;
     std::vector<double> nn_dist_sq;
-    std::vector<Eigen::VectorXd> nn_points;
     const int k = tree.QueryHybrid(query, radius, max_nn,
-                                   nn_indices, nn_dist_sq, nn_points,
-                                   eps, sorted);
-    return std::make_tuple(k, nn_indices, nn_dist_sq, nn_points);
+                                   nn_indices, nn_dist_sq, eps, sorted);
+    return std::make_tuple(k, nn_indices, nn_dist_sq);
   };
 
   py::class_<KDTreeNanoFlann, std::shared_ptr<KDTreeNanoFlann>>
